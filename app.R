@@ -21,7 +21,7 @@ ui <- fluidPage(
     # Sidebar  
     sidebarLayout(
         sidebarPanel(
-            helpText(em("This is application of some algorithms on"),span(strong("iris",style="color:blue")),em("dataset.")),
+            helpText("This is application of some algorithms on", em("iris"), "dataset."),
             navlistPanel(
                 tabPanel("Dataset",
                          selectInput("data","Select what you want to see",c("Data Description","Data Preview","Data Structure","Data Summary"),selected = NULL),
@@ -56,9 +56,9 @@ ui <- fluidPage(
                 ),
                 
                 tabPanel("Linear Regression",
-                         p(strong("We will see linear regression model fitting on iris dataset.")),
+                         p(strong("We will see Linear Regression Model fitting on iris dataset.")),
                          p("You can check fitted linear models considering various set of independent variables listed below. Also various test values can be calculated and plots can be to drawn to check which model, satisfying what criterias to be considered as final model."),
-                         helpText("We are using", span("Sepal.Length",style="color:blue"),"as",span("dependent variable",style="color:blue"),"and select from the list below which set of independent variables you want to use for bulding",span("linear regression model.",style="color:blue")),
+                         helpText("We are using", em(strong("Sepal.Length")), "as", em(strong("dependent variable")),"and select from the list below which set of independent variables you want to use for bulding",em(strong("Linear Regression Model."))),
                          selectInput("chk","Select the independent variable(s) of model",c("Sepal.Width","Petal.Length","Petal.Width","Species","Sepal.Width,Petal.Length","Sepal.Width,Petal.Width","Sepal.Width,Species","Petal.Length,Petal.Width","Petal.Length,Species","Petal.Width,Species","Sepal.Width,Petal.Length,Petal.Width","Sepal.Width,Petal.Length,Species","Sepal.Width,Petal.Width,Species","Petal.Length,Petal.Width,Species","Sepal.Width,Petal.Length,Petal.Width,Species"),selected = NULL),
                          
                          #Linear Regression tab
@@ -97,7 +97,7 @@ ui <- fluidPage(
                          
                          helpText("By next option you can see the result corresponding the above model you made."),
                          
-                         selectInput("value","Select option you want to see value",c("Model Summary","anova test","AIC","VIF","Residuals vs Fitted","Normal Q-Q plot","correlation(actual,prediction)","visual accuracy"),selected = NULL),
+                         selectInput("value","Select option you want to see value",c("Model Summary","AIC","VIF","Residuals vs Fitted","Normal Q-Q plot","correlation(actual,prediction)","visual accuracy"),selected = NULL),
                          
                          
                          #Model Summary
@@ -136,7 +136,7 @@ ui <- fluidPage(
                                                            verbatimTextOutput("ms15")),
                                           
                                           conditionalPanel(condition = "input.value=='Model Summary'",
-                                                           p("You can check the",span("Adjusted R-square value",style="color:blue"),"independent variables which are",span("statistically significant variable",style="color:blue"),"from model summary.")
+                                                           p("You can check the", em(strong("Adjusted R-square Value")),"for different combinations of independent variables and decide for combinations of", em(strong("statistically significant variables")),"from model summary.")
                                           )),
                          
                          
@@ -297,7 +297,7 @@ ui <- fluidPage(
                                                            plotOutput("r15")),
                                           
                                           conditionalPanel(condition = "input.value=='Residuals vs Fitted'",
-                                                           p("We can check that",span("residuals are homoscedastic or not",style="color:blue"),"from graph 'Residuals vs Fitted vales'."))
+                                                           p("We can check that", em(strong("residuals are homoscedastic or not")),"from graph 'Residuals vs Fitted vales'."))
                                           
                          ),
                          
@@ -338,7 +338,7 @@ ui <- fluidPage(
                                           
                                           
                                           conditionalPanel(condition = "input.value=='Normal Q-Q plot'",
-                                                           p("From Q-Q plot, we can check that",span("residuals are normally distributed or not.",style="color:blue")))
+                                                           p("From Q-Q plot, we can check that",em(strong("residuals are normally distributed or not."))))
                                           
                                           
                          ),
@@ -382,7 +382,7 @@ ui <- fluidPage(
                                                            verbatimTextOutput("c15")),
                                           
                                           conditionalPanel(condition = "input.value=='correlation(actual,prediction)'",
-                                                           p("This gives the",span("correlation between actual and predicted values",style="color:blue"),"i.e. from here we can get the",span("accuracy.",style="color:blue")))
+                                                           p("This gives the",em(strong("correlation between actual and predicted values")),"i.e. from here we can get the",em(strong("accuracy."))))
                                           
                          ),
                          
@@ -425,7 +425,7 @@ ui <- fluidPage(
                                                            plotOutput("v15")),
                                           
                                           conditionalPanel(condition = "input.value=='visual accuracy'",
-                                                           p("From here, we can check that",span("how much closure",style="color:blue"), "the",span("fitted and actual values are.",style="color:blue")))
+                                                           p("From here, we can check that",em(strong("how much closure")), "the",em(strong("fitted and actual values are."))))
                                           
                          ),
                          
@@ -699,17 +699,17 @@ server <- function(input, output) {
     
     #VIF
     output$VIF1<-renderText({
-        "As VIF is measure of multicolinearity between different predictor variables , it not valid for model containning only one variable."
+        "As VIF is measure of multicolinearity between different predictor variables , it is not valid for model containning only one variable."
     })
     
     output$VIF2<-renderText({
-        "As VIF is measure of multicolinearity between different predictor variables , it not valid for model containning only one variable."
+        "As VIF is measure of multicolinearity between different predictor variables , it is not valid for model containning only one variable."
     })
     output$VIF3<-renderText({
-        "As VIF is measure of multicolinearity between different predictor variables , it not valid for model containning only one variable."
+        "As VIF is measure of multicolinearity between different predictor variables , it is not valid for model containning only one variable."
     })
     output$VIF4<-renderText({
-        "As VIF is measure of multicolinearity between different predictor variables , it not valid for model containning only one variable."
+        "As VIF is measure of multicolinearity between different predictor variables , it is not valid for model containning only one variable."
     })
     output$VIF5<-renderPrint({
         vif(lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train))

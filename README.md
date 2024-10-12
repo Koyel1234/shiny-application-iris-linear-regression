@@ -4,4 +4,4 @@ This repository contains R file for web applicaton made using R for my final eva
 ![shiny-application-image](https://user-images.githubusercontent.com/76770146/129836802-d5933eec-f98b-4803-a570-acb9e63dc909.png)
 
 
-Application Link: https://koyel-pramanick.shinyapps.io/final_evaluation/
+Application Link: https://koyel-pramanick.shinyapps.io/basic_application_on_iris_data/
