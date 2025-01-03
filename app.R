@@ -97,7 +97,7 @@ ui <- fluidPage(
                          
                          helpText("By next option you can see the result corresponding the above model you made."),
                          
-                         selectInput("value","Select option you want to see value",c("Model Summary","AIC","VIF","Residuals vs Fitted","Normal Q-Q plot","correlation(actual,prediction)","visual accuracy"),selected = NULL),
+                         selectInput("value","Select option you want to see value",c("Model Summary","AIC","VIF","Residuals vs Fitted","Normal Q-Q plot","Correlation (Actual, Prediction)","Visual Accuracy", "Prediction"),selected = NULL),
                          
                          
                          #Model Summary
@@ -344,10 +344,8 @@ ui <- fluidPage(
                          ),
                          
                          
-                         #prediction
-                         
-                         #correlation(actual,prediction)
-                         conditionalPanel(condition = "input.value=='correlation(actual,prediction)'",
+                         #Correlation (Actual, Prediction)
+                         conditionalPanel(condition = "input.value=='Correlation (Actual, Prediction)'",
                                           h3("Correlation between actual and prediction of the above model is:"),
                                           
                                           conditionalPanel(condition = "input.chk=='Sepal.Width'",
@@ -381,16 +379,17 @@ ui <- fluidPage(
                                           conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width,Species'",
                                                            verbatimTextOutput("c15")),
                                           
-                                          conditionalPanel(condition = "input.value=='correlation(actual,prediction)'",
-                                                           p("This gives the",em(strong("correlation between actual and predicted values")),"i.e. from here we can get the",em(strong("accuracy."))))
+                                          conditionalPanel(condition = "input.value=='Correlation (Actual, Prediction)'",
+                                                           p("This gives the",em(strong("correlation")), "between actuals and predicted values in test part.")
+                                                           )
                                           
                          ),
                          
                          
                          
                          
-                         #visual accuracy
-                         conditionalPanel(condition = "input.value=='visual accuracy'",
+                         #Visual Accuracy
+                         conditionalPanel(condition = "input.value=='Visual Accuracy'",
                                           h3("Here we plot fitted over actual values:"),
                                           
                                           conditionalPanel(condition = "input.chk=='Sepal.Width'",
@@ -424,10 +423,78 @@ ui <- fluidPage(
                                           conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width,Species'",
                                                            plotOutput("v15")),
                                           
-                                          conditionalPanel(condition = "input.value=='visual accuracy'",
+                                          conditionalPanel(condition = "input.value=='Visual Accuracy'",
                                                            p("From here, we can check that",em(strong("how much closure")), "the",em(strong("fitted and actual values are."))))
                                           
                          ),
+                         
+                         
+                         # Prediction
+                         conditionalPanel(condition = "input.value == 'Prediction'",
+                                          helpText("Please put input for which you want to see predicted value of Sepal.Length. The selected model will be used."),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width'",
+                                                           numericInput("sw1","Enter value for Sepal.Width", value = 0),
+                                                           verbatimTextOutput("p1")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length'",
+                                                           numericInput("sw2","Enter value for Petal.Length", value = 0),
+                                                           verbatimTextOutput("p2")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Width'",
+                                                           numericInput("sw3","Enter value for Petal.Width", value = 0),
+                                                           verbatimTextOutput("p3")),
+                                          conditionalPanel(condition = "input.chk=='Species'",
+                                                           textInput("sw4","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p4")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length'",
+                                                           numericInput("sw5","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw6","Enter value for Petal.Length", value = 0),
+                                                           verbatimTextOutput("p5")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Width'",
+                                                           numericInput("sw7","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw8","Enter value for Petal.Width", value = 0),
+                                                           verbatimTextOutput("p6")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Species'",
+                                                           numericInput("sw9","Enter value for Sepal.Width", value = 0),
+                                                           textInput("sw10","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p7")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Petal.Width'",
+                                                           numericInput("sw11","Enter value for Petal.Length", value = 0),
+                                                           numericInput("sw12","Enter value for Petal.Width", value = 0),
+                                                           verbatimTextOutput("p8")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Species'",
+                                                           numericInput("sw13","Enter value for Petal.Length", value = 0),
+                                                           textInput("sw14","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p9")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Width,Species'",
+                                                           numericInput("sw15","Enter value for Petal.Width", value = 0),
+                                                           textInput("sw16","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p10")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width'",
+                                                           numericInput("sw17","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw18","Enter value for Petal.Length", value = 0),
+                                                           numericInput("sw19","Enter value for Petal.Width", value = 0),
+                                                           verbatimTextOutput("p11")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Species'",
+                                                           numericInput("sw20","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw21","Enter value for Petal.Length", value = 0),
+                                                           textInput("sw22","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p12")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Width,Species'",
+                                                           numericInput("sw23","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw24","Enter value for Petal.Width", value = 0),
+                                                           textInput("sw25","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p13")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Petal.Width,Species'",
+                                                           numericInput("sw26","Enter value for Petal.Length", value = 0),
+                                                           numericInput("sw27","Enter value for Petal.Width", value = 0),
+                                                           textInput("sw28","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p14")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width,Species'",
+                                                           numericInput("sw29","Enter value for Sepal.Width", value = 0),
+                                                           numericInput("sw30","Enter value for Petal.Length", value = 0),
+                                                           numericInput("sw31","Enter value for Petal.Width", value = 0),
+                                                           textInput("sw32","Enter value for Species", value = "virginica"),
+                                                           verbatimTextOutput("p15"))
+                         )
                          
                          
                 )
@@ -538,8 +605,8 @@ server <- function(input, output) {
     split
     
     
-    iris_train<-subset(iris,split=TRUE)
-    iris_test<-subset(iris,split=FALSE)
+    iris_train<-subset(iris,split==TRUE)
+    iris_test<-subset(iris,split==FALSE)
     
     
     
@@ -937,100 +1004,97 @@ server <- function(input, output) {
     })
     
     
-    #prediction
     
-    
-    
-    #correlation(actual,prediction)
+    # Correlation (Actual, Prediction)
     output$c1<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c2<-renderPrint({
         l<-lm(Sepal.Length~Petal.Length,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c3<-renderPrint({
         l<-lm(Sepal.Length~Petal.Width,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c4<-renderPrint({
         l<-lm(Sepal.Length~Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c5<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c6<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c7<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c8<-renderPrint({
         l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c9<-renderPrint({
         l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c10<-renderPrint({
         l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c11<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c12<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c13<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c14<-renderPrint({
         l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     output$c15<-renderPrint({
         l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)
+        cor(new_data)[1,2]
     })
     
     
@@ -1099,7 +1163,7 @@ server <- function(input, output) {
         lines(pred,type="l",col="green")
     })
     output$v10<-renderPlot({
-        l<-lm(Sepal.Length~etal.Width+Species,data=iris_train)
+        l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
@@ -1139,6 +1203,71 @@ server <- function(input, output) {
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
+    })
+    
+    
+    
+    
+    # Prediction on User Input
+    output$p1<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw1)))
+    })
+    output$p2<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+      predict(l, data.frame(Petal.Length=c(input$sw2)))
+    })
+    output$p3<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw3)))
+    })
+    output$p4<-renderPrint({
+      l<-lm(Sepal.Length~Species,data=iris_train)
+      predict(l, data.frame(Species=c(input$sw4)))
+    })
+    output$p5<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6)))
+    })
+    output$p6<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8)))
+    })
+    output$p7<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10)))
+    })
+    output$p8<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+      predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12)))
+    })
+    output$p9<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+      predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14)))
+    })
+    output$p10<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+      predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16)))
+    })
+    output$p11<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19)))
+    })
+    output$p12<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22)))
+    })
+    output$p13<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25)))
+    })
+    output$p14<-renderPrint({
+      l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+      predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28)))
+    })
+    output$p15<-renderPrint({
+      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+      predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32)))
     })
     
 }
