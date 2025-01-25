@@ -335,7 +335,7 @@ ui <- fluidPage(
                                                            plotOutput("q11")),
                                           conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Species'",
                                                            plotOutput("q12")),
-                                          conditionalPanel(condition = "input.chk=='epal.Width,Petal.Width,Species'",
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Width,Species'",
                                                            plotOutput("q13")),
                                           conditionalPanel(condition = "input.chk=='Petal.Length,Petal.Width,Species'",
                                                            plotOutput("q14")),
@@ -537,8 +537,12 @@ ui <- fluidPage(
             
             
             
-            width=3
+            width=3,
+            br(),
+            helpText(tags$u(strong("Conclusion:")), "Here after considering AICc, AIC, VIF, Heteroscadasticity, Adjusted R-square and Results against Test set combindly, we will select features sets", strong("Sepal.Width, Petal.Length, Petal.Width"),"as Baseline Model.")
         )
+        
+        
     )
 )
 
@@ -1156,10 +1160,10 @@ server <- function(input, output) {
     
     #visual accuracy
     output$v1<-renderPlot({
-        l<-model1
-        pred<-predict(l,iris_test)
-        new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        plot(new_data$V1,type="l",col="blue")
+        #l<-model1
+        pred<-predict(model1,iris_test)
+        #new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
+        plot(iris_test$Sepal.Length,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v2<-renderPlot({
