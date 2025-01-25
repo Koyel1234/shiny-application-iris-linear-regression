@@ -7,9 +7,15 @@
 #    http://shiny.rstudio.com/
 #
 
+# calc AICc for rest models
+# calculate BIC for all models
+# 
+
 library(shiny)
 library(car)
 library(caTools)
+library(MuMIn)
+library(olsrr)
 
 
 ui <- fluidPage(
@@ -97,7 +103,7 @@ ui <- fluidPage(
                          
                          helpText("By next option you can see the result corresponding the above model you made."),
                          
-                         selectInput("value","Select option you want to see value",c("Model Summary","AIC","VIF","Residuals vs Fitted","Normal Q-Q plot","Correlation (Actual, Prediction)","Visual Accuracy", "Prediction"),selected = NULL),
+                         selectInput("value","Select option you want to see value",c("Model Summary","AIC and AICc","VIF","Residuals vs Fitted","Normal Q-Q plot","Correlation (Actual, Prediction)","Visual Accuracy", "Prediction"),selected = NULL),
                          
                          
                          #Model Summary
@@ -142,9 +148,9 @@ ui <- fluidPage(
                          
                          
                          #AIC
-                         conditionalPanel(condition = "input.value=='AIC'",
-                                          h3("AIC value:"),
-                                          conditionalPanel(condition = "input.value=='AIC'",
+                         conditionalPanel(condition = "input.value=='AIC and AICc'",
+                                          h3("AIC and AICc Value:"),
+                                          conditionalPanel(condition = "input.value=='AIC and AICc'",
                                                            conditionalPanel(condition = "input.chk=='Sepal.Width'",
                                                                             verbatimTextOutput("AIC1")),
                                                            conditionalPanel(condition = "input.chk=='Petal.Length'",
@@ -508,7 +514,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             helpText(em("Here you can see some extra information about model selection procedure for linear regression, varities types of tests, which to use for what purpose. Just click on the corresponding radio button.")),
-            radioButtons("extra_info_l","Linear Regression ",c("R-square and Adjusted R-square","Statistically Significant Variable","AIC value","VIF value","Residuals vs Fitted value plot","Normal Q-Q plot"),selected = character(0)),
+            radioButtons("extra_info_l","Linear Regression ",c("R-square and Adjusted R-square","Statistically Significant Variable","AIC and AICc value","VIF value","Residuals vs Fitted value plot","Normal Q-Q plot"),selected = character(0)),
             
             
             
@@ -518,7 +524,7 @@ ui <- fluidPage(
             conditionalPanel(condition="input.extra_info_l=='Statistically Significant Variable'",
                              textOutput("text_4")),
             
-            conditionalPanel(condition="input.extra_info_l=='AIC value'",
+            conditionalPanel(condition="input.extra_info_l=='AIC and AICc value'",
                              textOutput("text_6")),
             
             conditionalPanel(condition="input.extra_info_l=='VIF value'",
@@ -552,7 +558,7 @@ server <- function(input, output) {
     })
     
     output$text_6<-renderText({
-        "Full form: Akaike Information Criteria. AIC is a measure of how well the model will fit the new data. It is an estimator of prediction error, thereby estimates the relative amount aof information lost by a given model. The less information a model losses i.e. the less the AIC  value, the higher the quality of the model."
+        "Full form of AIC: Akaike Information Criteria. AIC is a measure of how well the model will fit the new data. It is an estimator of prediction error, thereby estimates the relative amount of information lost by a given model. The less information a model losses i.e. the less the AIC  value, the higher the quality of the model. AICc is AIC value corrected for small sample sizes, which is approximately same as AIC for large sample sizes. The criterion for selecting best model based on AICc is same as AIC"
     })
     
     output$text_8<-renderText({
@@ -609,103 +615,119 @@ server <- function(input, output) {
     iris_test<-subset(iris,split==FALSE)
     
     
+    model1<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+    model2<-lm(Sepal.Length~Petal.Length,data=iris_train)
+    model3<-lm(Sepal.Length~Petal.Width,data=iris_train)
+    model4<-lm(Sepal.Length~Species,data=iris_train)
+    model5<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+    model6<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+    model7<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+    model8<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+    model9<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+    model10<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+    model11<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+    model12<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+    model13<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+    model14<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+    model15<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+  
     
     #model
     output$m1<-renderPrint({
-        lm(Sepal.Length~Sepal.Width,data=iris_train)
+        model1
     })
     
     output$m2<-renderPrint({
-        lm(Sepal.Length~Petal.Length,data=iris_train)
+        model2
     })
     output$m3<-renderPrint({
-        lm(Sepal.Length~Petal.Width,data=iris_train)
+        model3
     })
     output$m4<-renderPrint({
-        lm(Sepal.Length~Species,data=iris_train)
+        model4
     })
     output$m5<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+        model5
     })
     output$m6<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+        model6
     })
     output$m7<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+        model7
     })
     output$m8<-renderPrint({
-        lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+        model8
     })
     output$m9<-renderPrint({
-        lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+        model9
     })
     output$m10<-renderPrint({
-        lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+        model10
     })
     output$m11<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+        model11
     })
     output$m12<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+        model12
     })
     output$m13<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+        model13
     })
     output$m14<-renderPrint({
-        lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+        model14
     })
     output$m15<-renderPrint({
-        lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+        model15
     })
     
     
     
     #Model summary
     output$ms1<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width,data=iris_train))
+        summary(model1)
     })
     
     output$ms2<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Length,data=iris_train))
+        summary(model2)
     })
     output$ms3<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Width,data=iris_train))
+        summary(model3)
     })
     output$ms4<-renderPrint({
-        summary(lm(Sepal.Length~Species,data=iris_train))
+        summary(model4)
     })
     output$ms5<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train))
+        summary(model5)
     })
     output$ms6<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train))
+        summary(model6)
     })
     output$ms7<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Species,data=iris_train))
+        summary(model7)
     })
     output$ms8<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train))
+        summary(model8)
     })
     output$ms9<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Length+Species,data=iris_train))
+        summary(model9)
     })
     output$ms10<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Width+Species,data=iris_train))
+        summary(model10)
     })
     output$ms11<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train))
+        summary(model11)
     })
     output$ms12<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train))
+        summary(model12)
     })
     output$ms13<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train))
+        summary(model13)
     })
     output$ms14<-renderPrint({
-        summary(lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train))
+        summary(model14)
     })
     output$ms15<-renderPrint({
-        summary(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train))
+        summary(model15)
     })
     
     
@@ -713,50 +735,81 @@ server <- function(input, output) {
     
     #AIC
     output$AIC1<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width,data=iris_train))
+      aic_aicc_values <- c(AIC(model1), AICc(model1))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
+      
     })
     
     output$AIC2<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Length,data=iris_train))
+      aic_aicc_values <- c(AIC(model2), AICc(model2))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC3<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Width,data=iris_train))
+      aic_aicc_values <- c(AIC(model3), AICc(model3))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC4<-renderPrint({
-        AIC(lm(Sepal.Length~Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model4), AICc(model4))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC5<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train))
+      aic_aicc_values <- c(AIC(model5), AICc(model5))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC6<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train))
+      aic_aicc_values <- c(AIC(model6), AICc(model6))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC7<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model7), AICc(model7))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC8<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train))
+      aic_aicc_values <- c(AIC(model8), AICc(model8))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC9<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Length+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model9), AICc(model9))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC10<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Width+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model10), AICc(model10))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC11<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train))
+      aic_aicc_values <- c(AIC(model11), AICc(model11))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC12<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model12), AICc(model12))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC13<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model13), AICc(model13))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC14<-renderPrint({
-        AIC(lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model14), AICc(model14))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     output$AIC15<-renderPrint({
-        AIC(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train))
+      aic_aicc_values <- c(AIC(model15), AICc(model15))
+      names(aic_aicc_values) <- c("AIC Value", "AICc Value")
+      print(aic_aicc_values)
     })
     
     
@@ -779,226 +832,227 @@ server <- function(input, output) {
         "As VIF is measure of multicolinearity between different predictor variables , it is not valid for model containning only one variable."
     })
     output$VIF5<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train))
+        vif(model5)
+      #ols_vif_tol(model5)
     })
     output$VIF6<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train))
+        vif(model6)
     })
     output$VIF7<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Species,data=iris_train))
+        vif(model7)
     })
     output$VIF8<-renderPrint({
-        vif(lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train))
+        vif(model8)
     })
     output$VIF9<-renderPrint({
-        vif(lm(Sepal.Length~Petal.Length+Species,data=iris_train))
+        vif(model9)
     })
     output$VIF10<-renderPrint({
-        vif(lm(Sepal.Length~Petal.Width,Species,data=iris_train))
+        vif(model10)
     })
     output$VIF11<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train))
+        vif(model11)
     })
     output$VIF12<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train))
+        vif(model12)
     })
     output$VIF13<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train))
+        vif(model13)
     })
     output$VIF14<-renderPrint({
-        vif(lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train))
+        vif(model14)
     })
     output$VIF15<-renderPrint({
-        vif(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train))
+        vif(model15)
     })
     
     
     #durbinwatson test
     output$d1<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width,data=iris_train))
+        durbinWatsonTest(model1)
     })
     
     output$d2<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Length,data=iris_train))
+        durbinWatsonTest(model2)
     })
     output$d3<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Width,data=iris_train))
+        durbinWatsonTest(model3)
     })
     output$d4<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Species,data=iris_train))
+        durbinWatsonTest(model4)
     })
     output$d5<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train))
+        durbinWatsonTest(model5)
     })
     output$d6<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train))
+        durbinWatsonTest(model6)
     })
     output$d7<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Species,data=iris_train))
+        durbinWatsonTest(model7)
     })
     output$d8<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train))
+        durbinWatsonTest(model8)
     })
     output$d9<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Length+Species,data=iris_train))
+        durbinWatsonTest(model9)
     })
     output$d10<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Width,Species,data=iris_train))
+        durbinWatsonTest(lm(model10))
     })
     output$d11<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train))
+        durbinWatsonTest(model11)
     })
     output$d12<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train))
+        durbinWatsonTest(model12)
     })
     output$d13<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train))
+        durbinWatsonTest(model13)
     })
     output$d14<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train))
+        durbinWatsonTest(model14)
     })
     output$d15<-renderPrint({
-        durbinWatsonTest(lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train))
+        durbinWatsonTest(model15)
     })
     
     
     #Residuals vs Fitted
     output$r1<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+        l<-model1
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     
     output$r2<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+        l<-model2
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r3<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+        l<-model3
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r4<-renderPlot({
-        l<-lm(Sepal.Length~Species,data=iris_train)
+        l<-model4
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r5<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+        l<-model5
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r6<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+        l<-model6
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r7<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+        l<-model7
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r8<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+        l<-model8
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r9<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+        l<-model9
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r10<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+        l<-model10
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r11<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+        l<-model11
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r12<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+        l<-model12
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r13<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+        l<-model13
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r14<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model14
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     output$r15<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model15
         plot(l$fitted.values,l$residuals,xlab="Fitted values",ylab="Residuals")
     })
     
     
     #Normal Q-Q plot
     output$q1<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+        l<-model1
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q2<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+        l<-model2
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q3<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+        l<-model3
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q4<-renderPlot({
-        l<-lm(Sepal.Length~Species,data=iris_train)
+        l<-model4
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q5<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+        l<-model5
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q6<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+        l<-model6
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q7<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+        l<-model7
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q8<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+        l<-model8
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q9<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+        l<-model9
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q10<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+        l<-model10
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q11<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+        l<-model11
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q12<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+        l<-model12
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q13<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+        l<-model13
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q14<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model14
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
     output$q15<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model15
         qqnorm(l$residuals)
         qqline(l$residuals,col='red')
     })
@@ -1007,91 +1061,93 @@ server <- function(input, output) {
     
     # Correlation (Actual, Prediction)
     output$c1<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+        l<-model1
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
-        cor(new_data)[1,2]
+        cor(new_data)[1,2]^2
+        colMeans(new_data)
+        new_data[2]
     })
     output$c2<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+        l<-model2
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c3<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+        l<-model3
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c4<-renderPrint({
-        l<-lm(Sepal.Length~Species,data=iris_train)
+        l<-model4
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c5<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+        l<-model5
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c6<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+        l<-model6
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c7<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+        l<-model7
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c8<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+        l<-model8
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c9<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+        l<-model9
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c10<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+        l<-model10
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c11<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+        l<-model11
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c12<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+        l<-model12
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c13<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+        l<-model13
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c14<-renderPrint({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model14
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
     })
     output$c15<-renderPrint({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model15
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         cor(new_data)[1,2]
@@ -1100,105 +1156,105 @@ server <- function(input, output) {
     
     #visual accuracy
     output$v1<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+        l<-model1
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v2<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+        l<-model2
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v3<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+        l<-model3
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v4<-renderPlot({
-        l<-lm(Sepal.Length~Species,data=iris_train)
+        l<-model4
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v5<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+        l<-model5
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v6<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+        l<-model6
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v7<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+        l<-model7
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v8<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+        l<-model8
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v9<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+        l<-model9
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v10<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+        l<-model10
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v11<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+        l<-model11
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v12<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+        l<-model12
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v13<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+        l<-model13
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v14<-renderPlot({
-        l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model14
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
         lines(pred,type="l",col="green")
     })
     output$v15<-renderPlot({
-        l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+        l<-model15
         pred<-predict(l,iris_test)
         new_data<-data.frame(cbind(iris_test$Sepal.Length,pred))
         plot(new_data$V1,type="l",col="blue")
@@ -1210,63 +1266,63 @@ server <- function(input, output) {
     
     # Prediction on User Input
     output$p1<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width,data=iris_train)
+      l<-model1
       predict(l, data.frame(Sepal.Width=c(input$sw1)))
     })
     output$p2<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Length,data=iris_train)
+      l<-model2
       predict(l, data.frame(Petal.Length=c(input$sw2)))
     })
     output$p3<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Width,data=iris_train)
+      l<-model3
       predict(l, data.frame(Sepal.Width=c(input$sw3)))
     })
     output$p4<-renderPrint({
-      l<-lm(Sepal.Length~Species,data=iris_train)
+      l<-model4
       predict(l, data.frame(Species=c(input$sw4)))
     })
     output$p5<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Length,data=iris_train)
+      l<-model5
       predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6)))
     })
     output$p6<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Width,data=iris_train)
+      l<-model6
       predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8)))
     })
     output$p7<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Species,data=iris_train)
+      l<-model7
       predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10)))
     })
     output$p8<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Length+Petal.Width,data=iris_train)
+      l<-model8
       predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12)))
     })
     output$p9<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Length+Species,data=iris_train)
+      l<-model9
       predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14)))
     })
     output$p10<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Width+Species,data=iris_train)
+      l<-model10
       predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16)))
     })
     output$p11<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width,data=iris_train)
+      l<-model11
       predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19)))
     })
     output$p12<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Species,data=iris_train)
+      l<-model12
       predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22)))
     })
     output$p13<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Width+Species,data=iris_train)
+      l<-model13
       predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25)))
     })
     output$p14<-renderPrint({
-      l<-lm(Sepal.Length~Petal.Length+Petal.Width+Species,data=iris_train)
+      l<-model14
       predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28)))
     })
     output$p15<-renderPrint({
-      l<-lm(Sepal.Length~Sepal.Width+Petal.Length+Petal.Width+Species,data=iris_train)
+      l<-model15
       predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32)))
     })
     
