@@ -556,7 +556,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             helpText(em("Here you can see some extra information about model selection procedure for linear regression, varities types of tests, which to use for what purpose. Just click on the corresponding radio button.")),
-            radioButtons("extra_info_l","Linear Regression ",c("R-square and Adjusted R-square","Statistically Significant Variable","AIC and AICc value","VIF value","Residuals vs Fitted value plot","Normal Q-Q plot"),selected = character(0)),
+            radioButtons("extra_info_l","Linear Regression ",c("R-square and Adjusted R-square","Statistically Significant Variable","AIC and AICc value","VIF value","Residuals vs Fitted value plot","Normal Q-Q plot", "Durbinwatson Test"),selected = character(0)),
             
             
             
@@ -576,6 +576,8 @@ ui <- fluidPage(
                              textOutput("text_10")),
             conditionalPanel(condition="input.extra_info_l=='Normal Q-Q plot'",
                              textOutput("text_11")),
+            conditionalPanel(condition="input.extra_info_l=='Durbinwatson Test'",
+                             textOutput("text_12")),
             
             
             
@@ -616,6 +618,9 @@ server <- function(input, output) {
     })
     output$text_11<-renderText({
         "This plot has quantiles of a sample from normal distribution at x axis and quantiles of residuals at y axis. If more or less straight line is formed, the residuals are normally distributed"
+    })
+    output$text_12<-renderText({
+      "This test helps in determining presence of autocorrelation in the residuals. Test Statistic value should be 2 for ideal case."
     })
     
     
