@@ -103,7 +103,7 @@ ui <- fluidPage(
                          
                          helpText("By next option you can see the result corresponding the above model you made."),
                          
-                         selectInput("value","Select option you want to see value",c("Model Summary","AIC and AICc","VIF","Residuals vs Fitted","Normal Q-Q plot","Correlation (Actual, Prediction)","Visual Accuracy", "Prediction"),selected = NULL),
+                         selectInput("value","Select option you want to see value",c("Model Summary","AIC and AICc","VIF","Residuals vs Fitted","Normal Q-Q plot", "Durbinwatson Test", "Correlation (Actual, Prediction)", "Test Accuracy", "Visual Accuracy", "Prediction"),selected = NULL),
                          
                          
                          #Model Summary
@@ -226,9 +226,9 @@ ui <- fluidPage(
                          ),
                          
                          
-                         #durbinwatson test
-                         conditionalPanel(condition = "input.value=='durbinwatson test'",
-                                          h3("durbinwatson test for the above model is:"),
+                         #Durbinwatson Test
+                         conditionalPanel(condition = "input.value=='Durbinwatson Test'",
+                                          h3("Durbinwatson Test for the above model is:"),
                                           
                                           conditionalPanel(condition = "input.chk=='Sepal.Width'",
                                                            verbatimTextOutput("d1")),
@@ -261,8 +261,8 @@ ui <- fluidPage(
                                           conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width,Species'",
                                                            verbatimTextOutput("d15")),
                                           
-                                          conditionalPanel(condition = "input.value=='durbinwatson test'",
-                                                           p("'durbinWatson test' checks",span("residuals of fitted model are autocorrelated or not.",style="color:blue")))
+                                          conditionalPanel(condition = "input.value=='Durbinwatson Test'",
+                                                           p("'Durbinwatson Test' checks",span(em(strong("residuals of fitted model are autocorrelated or not.")))))
                                           
                          ),
                          
@@ -303,7 +303,7 @@ ui <- fluidPage(
                                                            plotOutput("r15")),
                                           
                                           conditionalPanel(condition = "input.value=='Residuals vs Fitted'",
-                                                           p("We can check that", em(strong("residuals are homoscedastic or not")),"from graph 'Residuals vs Fitted vales'."))
+                                                           p("We can check that", em(strong("residuals are homoscedastic or not")),"from graph 'Residuals vs Fitted values'."))
                                           
                          ),
                          
@@ -388,6 +388,48 @@ ui <- fluidPage(
                                           conditionalPanel(condition = "input.value=='Correlation (Actual, Prediction)'",
                                                            p("This gives the",em(strong("correlation")), "between actuals and predicted values in test part.")
                                                            )
+                                          
+                         ),
+                         
+                         
+                         # Test Accuracy
+                         conditionalPanel(condition = "input.value=='Test Accuracy'",
+                                          h3("Test Accuracy of the above model is:"),
+                                          
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width'",
+                                                           verbatimTextOutput("testacc1")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length'",
+                                                           verbatimTextOutput("testacc2")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Width'",
+                                                           verbatimTextOutput("testacc3")),
+                                          conditionalPanel(condition = "input.chk=='Species'",
+                                                           verbatimTextOutput("testacc4")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length'",
+                                                           verbatimTextOutput("testacc5")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Width'",
+                                                           verbatimTextOutput("testacc6")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Species'",
+                                                           verbatimTextOutput("testacc7")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Petal.Width'",
+                                                           verbatimTextOutput("testacc8")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Species'",
+                                                           verbatimTextOutput("testacc9")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Width,Species'",
+                                                           verbatimTextOutput("testacc10")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width'",
+                                                           verbatimTextOutput("testacc11")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Species'",
+                                                           verbatimTextOutput("testacc12")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Width,Species'",
+                                                           verbatimTextOutput("testacc13")),
+                                          conditionalPanel(condition = "input.chk=='Petal.Length,Petal.Width,Species'",
+                                                           verbatimTextOutput("testacc14")),
+                                          conditionalPanel(condition = "input.chk=='Sepal.Width,Petal.Length,Petal.Width,Species'",
+                                                           verbatimTextOutput("testacc15")),
+                                          
+                                          conditionalPanel(condition = "input.value=='Test Accuracy'",
+                                                           p("This gives the",em(strong("accuracy on test data")), "with the selected model.")
+                                          )
                                           
                          ),
                          
@@ -539,7 +581,7 @@ ui <- fluidPage(
             
             width=3,
             br(),
-            helpText(tags$u(strong("Conclusion:")), "Here after considering AICc, AIC, VIF, Heteroscadasticity, Adjusted R-square and Results against Test set combindly, we will select features sets", strong("Sepal.Width, Petal.Length, Petal.Width"),"as Baseline Model.")
+            helpText(tags$u(strong("Conclusion:")), "Here after considering AICc, AIC, VIF, Linearity, Heteroscadasticity and Autocorrelation in residuals, Adjusted R-square and Results against Test set combindly, we will select features sets", strong("Sepal.Width, Petal.Length, Petal.Width"),"as Baseline Model.")
         )
         
         
@@ -871,7 +913,7 @@ server <- function(input, output) {
     })
     
     
-    #durbinwatson test
+    #Durbinwatson Test
     output$d1<-renderPrint({
         durbinWatsonTest(model1)
     })
@@ -1158,7 +1200,115 @@ server <- function(input, output) {
     })
     
     
-    #visual accuracy
+    # Test Accuracy
+    output$testacc1<-renderPrint({
+      pred<-predict(model1,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc2<-renderPrint({
+      pred<-predict(model2,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc3<-renderPrint({
+      pred<-predict(model3,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc4<-renderPrint({
+      pred<-predict(model4,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc5<-renderPrint({
+      pred<-predict(model5,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc6<-renderPrint({
+      pred<-predict(model6,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc7<-renderPrint({
+      pred<-predict(model7,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc8<-renderPrint({
+      pred<-predict(model8,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc9<-renderPrint({
+      pred<-predict(model9,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc10<-renderPrint({
+      pred<-predict(model10,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc11<-renderPrint({
+      pred<-predict(model11,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc12<-renderPrint({
+      pred<-predict(model12,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc13<-renderPrint({
+      pred<-predict(model13,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc14<-renderPrint({
+      pred<-predict(model14,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    output$testacc15<-renderPrint({
+      pred<-predict(model15,iris_test)
+      rss<- sum((iris_test$Sepal.Length - pred)^2)
+      tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
+      r_squared<- 1- (rss/tss)
+      r_squared
+    })
+    
+    
+    # visual accuracy
     output$v1<-renderPlot({
         #l<-model1
         pred<-predict(model1,iris_test)
@@ -1271,63 +1421,109 @@ server <- function(input, output) {
     # Prediction on User Input
     output$p1<-renderPrint({
       l<-model1
-      predict(l, data.frame(Sepal.Width=c(input$sw1)))
+      #predict(l, data.frame(Sepal.Width=c(input$sw1))) 
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw1))))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p2<-renderPrint({
       l<-model2
-      predict(l, data.frame(Petal.Length=c(input$sw2)))
+      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw2)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p3<-renderPrint({
       l<-model3
-      predict(l, data.frame(Sepal.Width=c(input$sw3)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw3)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p4<-renderPrint({
       l<-model4
-      predict(l, data.frame(Species=c(input$sw4)))
+      l_temp <- predict(l, data.frame(Species=c(input$sw4)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p5<-renderPrint({
       l<-model5
-      predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p6<-renderPrint({
       l<-model6
-      predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p7<-renderPrint({
       l<-model7
-      predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p8<-renderPrint({
       l<-model8
-      predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12)))
+      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p9<-renderPrint({
       l<-model9
-      predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14)))
+      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p10<-renderPrint({
       l<-model10
-      predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16)))
+      l_temp <- predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p11<-renderPrint({
       l<-model11
-      predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p12<-renderPrint({
       l<-model12
-      predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p13<-renderPrint({
       l<-model13
-      predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p14<-renderPrint({
       l<-model14
-      predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28)))
+      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     output$p15<-renderPrint({
       l<-model15
-      predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32)))
+      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32)))
+      colnames(l_temp) <- 'output'
+      rownames(l_temp) <- 'output with given inputs: '
+      print(l_temp)
     })
     
 }
