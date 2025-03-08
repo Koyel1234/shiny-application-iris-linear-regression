@@ -1211,105 +1211,135 @@ server <- function(input, output) {
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc2<-renderPrint({
       pred<-predict(model2,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc3<-renderPrint({
       pred<-predict(model3,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc4<-renderPrint({
       pred<-predict(model4,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc5<-renderPrint({
       pred<-predict(model5,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc6<-renderPrint({
       pred<-predict(model6,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc7<-renderPrint({
       pred<-predict(model7,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc8<-renderPrint({
       pred<-predict(model8,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc9<-renderPrint({
       pred<-predict(model9,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc10<-renderPrint({
       pred<-predict(model10,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc11<-renderPrint({
       pred<-predict(model11,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc12<-renderPrint({
       pred<-predict(model12,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc13<-renderPrint({
       pred<-predict(model13,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc14<-renderPrint({
       pred<-predict(model14,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     output$testacc15<-renderPrint({
       pred<-predict(model15,iris_test)
       rss<- sum((iris_test$Sepal.Length - pred)^2)
       tss<-sum((iris_test$Sepal.Length - mean(iris_test$Sepal.Length))^2)
       r_squared<- 1- (rss/tss)
-      r_squared
+      rsq_temp<- data.frame(r_squared)
+      rownames(rsq_temp)<-'output: '
+      rsq_temp
     })
     
     
@@ -1428,106 +1458,106 @@ server <- function(input, output) {
       l<-model1
       #predict(l, data.frame(Sepal.Width=c(input$sw1))) 
       l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw1))))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p2<-renderPrint({
       l<-model2
-      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw2)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Petal.Length=c(input$sw2))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p3<-renderPrint({
       l<-model3
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw3)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw3))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p4<-renderPrint({
       l<-model4
-      l_temp <- predict(l, data.frame(Species=c(input$sw4)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Species=c(input$sw4))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p5<-renderPrint({
       l<-model5
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw5), Petal.Length=c(input$sw6))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p6<-renderPrint({
       l<-model6
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw7), Petal.Width=c(input$sw8))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p7<-renderPrint({
       l<-model7
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw9), Species=c(input$sw10))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p8<-renderPrint({
       l<-model8
-      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Petal.Length=c(input$sw11), Petal.Width=c(input$sw12))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p9<-renderPrint({
       l<-model9
-      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Petal.Length=c(input$sw13), Species=c(input$sw14))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p10<-renderPrint({
       l<-model10
-      l_temp <- predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Petal.Width=c(input$sw15),Species=c(input$sw16))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p11<-renderPrint({
       l<-model11
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw17),Petal.Length=c(input$sw18),Petal.Width=c(input$sw19))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p12<-renderPrint({
       l<-model12
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw20),Petal.Length=c(input$sw21),Species=c(input$sw22))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p13<-renderPrint({
       l<-model13
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw23),Petal.Width=c(input$sw24),Species=c(input$sw25))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p14<-renderPrint({
       l<-model14
-      l_temp <- predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Petal.Length=c(input$sw26),Petal.Width=c(input$sw27),Species=c(input$sw28))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     output$p15<-renderPrint({
       l<-model15
-      l_temp <- predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32)))
-      colnames(l_temp) <- 'output'
-      rownames(l_temp) <- 'output with given inputs: '
+      l_temp <- data.frame(predict(l, data.frame(Sepal.Width=c(input$sw29),Petal.Length=c(input$sw30),Petal.Width=c(input$sw31),Species=c(input$sw32))))
+      colnames(l_temp) <- 'Sepal.Length'
+      rownames(l_temp) <- 'Predicted output with given inputs: '
       print(l_temp)
     })
     
